@@ -12,5 +12,6 @@ Possible questions / projects
 - Which brand  has the highest / lowest sales  | growth
 - Is one brand's growth affecting another brand's decline?
 - Drilldown as a treemap starting with growing vs shrinking areas
-- Treemap with Brand > Region
 - Outlier values, if any
+
+- [done] Treemap with Brand > Region
