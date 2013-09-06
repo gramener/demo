@@ -2,7 +2,17 @@
 title = 'My first visual!'
 data = pd.read_csv('data.csv')
 data = data[(data['Regions'] != 'Total') & (data['Regions'] != 'Grand Total')]
-groups = ['Regions', 'Brand']
+
+selection = args.get('groups', ['Region - Brand'])[0]
+
+if selection == 'Region - Brand':
+    groups = ['Regions', 'Brand']
+elif selection == 'Brand - Region':
+    groups = ['Brand', 'Regions']
+else:
+    selection = 'Region - Brand'
+    groups = ['Regions', 'Brand']
+
 {% end %}<!DOCTYPE html><html lang="en">
   <head>
   <title>
@@ -16,8 +26,20 @@ groups = ['Regions', 'Brand']
   </style>
   </head><body>
     <div class="container">
+
+
+    <form>
+      <select name="groups">
+        <option>Region - Brand</option>
+        <option>Brand - Region</option>
+      </select>
+
+      <button>Submit</button>
+    </form>
+
+    {% set x = data['Month1'].sum() %}
       <h2>
-      Revenue Breakup
+      Revenue Breakup by {{ selection }}
       </h2>
     {{ SVG('subtreemap.svg',
         cls     = 'treemap',
