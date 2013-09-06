@@ -1,4 +1,6 @@
-{{ GRAMEX(cache=['data.csv']) }}{% code %}
+{{ GRAMEX(
+    users=lambda username: True
+) }}{% code %}
 title = 'My first visual!'
 data = pd.read_csv('data.csv')
 data = data[(data['Regions'] != 'Total') & (data['Regions'] != 'Grand Total')]
@@ -29,12 +31,24 @@ else:
   </head><body>
     <div class="container">
 
+    {% from auth import Auth %}
+    {% set auth = Auth(DB) %}
+    {% set roles = auth.roles(handler.get_current_user()) %}
+
+
+    <p>You are logged in as {{ handler.get_current_user() }}.
+      You have the roles {{ ', '.join(roles) }}.
+      <a href="/admin/login?logout=1&next=/">Logout</a>
+    </p>
+
 
     <form>
       <select name="groups">
         <option>Region - Brand</option>
         <option>Brand - Region</option>
-        <option>LKR - Region - Brand</option>
+        {% if 'admin' in roles %}
+          <option>LKR - Region - Brand</option>
+        {% end %}
       </select>
 
       <button>Submit</button>
