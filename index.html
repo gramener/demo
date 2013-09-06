@@ -1,0 +1,55 @@
+{{ GRAMEX(cache=['data.csv']) }}{% code %}
+title = 'My first visual!'
+data = pd.read_csv('data.csv')
+data = data[(data['Regions'] != 'Total') & (data['Regions'] != 'Grand Total')]
+groups = ['Regions', 'Brand']
+{% end %}<!DOCTYPE html><html lang="en">
+  <head>
+  <title>
+    {{title}}
+  </title>
+  <link rel="stylesheet" href="{{ ('/css/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ ('/css/base.css') }}">
+  <link rel="stylesheet" href="{{ ('/css/font-awesome.min.css') }}">
+  <style>
+    .container { width: 940px; font-family: Helvetica, Arial, sans-serif;}
+  </style>
+  </head><body>
+    <div class="container">
+      <h2>
+      Revenue Breakup
+      </h2>
+    {{ SVG('subtreemap.svg',
+        cls     = 'treemap',
+        width   = 940,
+        height  = 581,  # golden ratio: 940 / 1.618
+        data    = data,
+        keys    = groups,
+        values  = {'Month1':numpy.sum, 'Month2':numpy.sum},
+        size    = lambda v: v['Month2'],
+        sort    = lambda v: v.sort('Month2', ascending=False),
+        text    = lambda v, level: v[groups[level]],
+        title   = lambda v, level: v[groups[level]],
+        color   = lambda v: _color.gradient(v['Month2']/v['Month1']-1, _color.RYG),
+        aspect  = 2.5,
+        wrap    = False,
+        parents = True,
+        padding = 4,
+        # attrs   = {
+        #   'stroke': '#fff'
+        # }
+    ) }}
+    </div>
+<script src="/js/jquery.min.js"></script>
+<script src="/js/fit.js"></script>
+<script>
+
+fit.text($('.treemap'));
+$('g:not(.l-1) rect').on('click', function() {
+      $(this).hide();
+      $(this).next().hide();
+  });
+
+</script>
+</body>
+</html>
